@@ -90,6 +90,8 @@ python manage.py migrate
 
 ```
 python manage.py createsuperuser
+```
+```
 Username (leave blank to use 'Shivansh'): francisco
 Email address: francisco@123.com
 Password: 12345678
