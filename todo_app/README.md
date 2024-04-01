@@ -136,10 +136,32 @@ class TaskSerializer(serializers.ModelSerializer):
 
 ## Display API Overview
 
-`task/views.py:`
+Adding the endpoints to the file urls.py
+
+`task/urls.py:`
 
 ```
-from django.shortcuts import render, redirect
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.home, name='home'),
+    path('completed', views.completed, name='completed'),
+    path('remaining', views.remaining, name='remaining'),
+    path('add_task', views.add_task, name='add_task'),
+    path('delete_task/<str:task_id>', views.delete_task, name='delete_task'),  # Corregido el nombre de la ruta
+    path('task_detail/<str:task_id>', views.task_detail, name='task_detail'),
+    path('toggle_complete/<str:task_id>', views.toggle_complete, name='toggle_complete'),
+    path('remove_task/<str:task_id>', views.remove_task, name='remove_task'),
+]
+```
+`task/views.py:`
+
+Manage the CRUD operations and redirect the data to the templates.
+
+```
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, render, redirect
 from .models import Task
 
 # Create your views here.
@@ -186,49 +208,44 @@ def add_task(request):
     return render(request, 'add_task.html')
 
 def delete_task(request, task_id):
-    task = Task.objects.get(id=task_id)
-    return render(request, 'delete.html', {
-        "task": task,
-    })
+    task = get_object_or_404(Task, id=task_id)
+    
+    if request.method == 'POST':
+        task.delete()
+        return redirect('home')
+    
+    return render(request, 'delete.html', {"task": task})
 
 def task_detail(request, task_id):
-    task = Task.objects.get(id=task_id)
-    return render(request, 'task_detail.html', {
-        "task": task,
+     
+     if request.method == 'GET':
+        task = Task.objects.get(id=task_id)
+        return render(request, 'task_detail.html', {            
+        "task": task,    
     })
 
-
 def toggle_complete(request, task_id):
-    task = Task.objects.get(id=task_id)
-    if task:
-        task.completed = not task.completed
-        task.save()
-        return redirect('home')
-
+    if request.method == 'GET':
+        task = Task.objects.get(id=task_id)
+        if task:
+            task.completed = not task.completed
+            task.save() 
+            return redirect('home')
 
 def remove_task(request, task_id):
-    task = Task.objects.get(id=task_id)
-    if task:
+    if request.method == 'POST':
+        task = Task.objects.get(id=task_id)
         task.delete()
         return redirect('home')
 ```
+## How to run
 
-`task/urls.py:`
+- open the todo_app folder in the IDE -> Then
 
-```
-from django.urls import path
-from . import views
-
-urlpatterns = [
-    path('', views.home, name='home'),
-    path('completed', views.completed, name='completed'),
-    path('remaining', views.remaining, name='remaining'),
-    path('add_task', views.add_task, name='add_task'),
-    path('delete_task/<str:task_id>', views.delete_task, name='delete_task'),  # Corregido el nombre de la ruta
-    path('task_detail/<str:task_id>', views.task_detail, name='task_detail'),
-    path('toggle_complete/<str:task_id>', views.toggle_complete, name='toggle_complete'),
-    path('remove_task/<str:task_id>', views.remove_task, name='remove_task'),
-]
-
+`run:`
 
 ```
+python manage.py runserver
+```
+Then, open ```http://127.0.0.1:8000/``` in the Browser.
+

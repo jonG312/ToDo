@@ -1,4 +1,5 @@
-from django.shortcuts import render, redirect
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, render, redirect
 from .models import Task
 
 # Create your views here.
@@ -45,28 +46,32 @@ def add_task(request):
     return render(request, 'add_task.html')
 
 def delete_task(request, task_id):
-    task = Task.objects.get(id=task_id)
-    return render(request, 'delete.html', {
-        "task": task,
-    })
+    task = get_object_or_404(Task, id=task_id)
+    
+    if request.method == 'POST':
+        task.delete()
+        return redirect('home')
+    
+    return render(request, 'delete.html', {"task": task})
 
 def task_detail(request, task_id):
-    task = Task.objects.get(id=task_id)
-    return render(request, 'task_detail.html', {
-        "task": task,
+     
+     if request.method == 'GET':
+        task = Task.objects.get(id=task_id)
+        return render(request, 'task_detail.html', {            
+        "task": task,    
     })
 
-
 def toggle_complete(request, task_id):
-    task = Task.objects.get(id=task_id)
-    if task:
-        task.completed = not task.completed
-        task.save()
-        return redirect('home')
-
+    if request.method == 'GET':
+        task = Task.objects.get(id=task_id)
+        if task:
+            task.completed = not task.completed
+            task.save() 
+            return redirect('home')
 
 def remove_task(request, task_id):
-    task = Task.objects.get(id=task_id)
-    if task:
+    if request.method == 'POST':
+        task = Task.objects.get(id=task_id)
         task.delete()
         return redirect('home')
