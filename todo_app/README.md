@@ -102,7 +102,6 @@ Then, run the server
 python manage.py runserver
 ```
 
-
 ## Create a model for the database that the Django ORM will manage.
 
 `models.py:`
@@ -121,23 +120,115 @@ class Task(models.Model):
     def __str__(self) -> str:
         return f'{self.title}'
 ```
+## Serialize the model data 
+
+`serializers.py:`
+
+```
+from rest_framework import serializers
+from .models import Task
+
+class TaskSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Task
+        fields = ['id', 'title', 'description', 'due_date', 'due_time', 'completed']
+```
+
+## Display API Overview
+
+`task/views.py:`
+
+```
+from django.shortcuts import render, redirect
+from .models import Task
+
+# Create your views here.
+def home(request):
+    tasks = Task.objects.all()
+
+    return render(request, 'index.html', {
+        'tasks': tasks,
+    })
+
+def completed(request):
+    completed_tasks = Task.objects.filter(completed=True)
+
+    return render(request, 'completed.html', {
+        'tasks': completed_tasks,
+    })
+
+def remaining(request):
+    remaining_tasks = Task.objects.filter(completed=False)
+    return render(request, 'remaining.html', {
+        'tasks': remaining_tasks,
+    })
+
+def add_task(request):
+    if request.method == "POST":
+        title = request.POST.get('title')
+        description = request.POST.get('description')
+        due_date = request.POST.get('due_date')
+        due_time = request.POST.get('due_time')
+        completed = False
+
+        if title != "" and due_date != "" and due_time !="":
+            task = Task(
+                title=title,
+                description=description,
+                due_date=due_date,
+                due_time=due_time,
+                completed=completed
+            )
+            task.save()
+            return redirect('home')
+    else:
+        return render(request, 'add_task.html') 
+    return render(request, 'add_task.html')
+
+def delete_task(request, task_id):
+    task = Task.objects.get(id=task_id)
+    return render(request, 'delete.html', {
+        "task": task,
+    })
+
+def task_detail(request, task_id):
+    task = Task.objects.get(id=task_id)
+    return render(request, 'task_detail.html', {
+        "task": task,
+    })
 
 
+def toggle_complete(request, task_id):
+    task = Task.objects.get(id=task_id)
+    if task:
+        task.completed = not task.completed
+        task.save()
+        return redirect('home')
 
 
+def remove_task(request, task_id):
+    task = Task.objects.get(id=task_id)
+    if task:
+        task.delete()
+        return redirect('home')
+```
+
+`task/urls.py:`
+
+```
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.home, name='home'),
+    path('completed', views.completed, name='completed'),
+    path('remaining', views.remaining, name='remaining'),
+    path('add_task', views.add_task, name='add_task'),
+    path('delete_task/<str:task_id>', views.delete_task, name='delete_task'),  # Corregido el nombre de la ruta
+    path('task_detail/<str:task_id>', views.task_detail, name='task_detail'),
+    path('toggle_complete/<str:task_id>', views.toggle_complete, name='toggle_complete'),
+    path('remove_task/<str:task_id>', views.remove_task, name='remove_task'),
+]
 
 
-
-
-
-
-
-
-
-## Set-Up Django Rest Framework
-
-
-## Serialize the model data from step-3
-
-
-## Create the URI endpoint to view the serialized data.
+```
