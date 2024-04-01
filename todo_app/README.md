@@ -1,6 +1,6 @@
 # Django Todo App
 
-##Set-Up Virtual Environment.
+## Set-Up Virtual Environment.
 
 Open the terminal in the IDE, and Make a Directory
 
@@ -27,7 +27,7 @@ cd myenv
 Scripts/activate
 ```
 
-##Set-Up Django
+## Set-Up Django
 
 Now, inside this virtual environment, we are going to install Django and other requirements.
 
@@ -51,20 +51,59 @@ Then, run the requirements file from the terminal
 pip install -r requirements.txt
 ```
 
-##Create a new app
+## Create a new app
 
 Now, go to terminal and write the next line
 
 ```
 cd todo_app
 ```
-
 ```
 django-admin startproject task
 ```
 
+## Register the task app and the djangorestframework in the todo_app project settings file
 
-##Create a model for the database that the Django ORM will manage.
+`settings.py:`
+
+```
+INSTALLED_APPS = [
+    .
+    .
+    .
+    'tasks.apps.TasksConfig',
+    'rest_framework',
+]
+```
+
+Then, migrate the database
+
+```
+cd todo_app
+```
+```
+python manage.py makemigrations
+python manage.py migrate
+```
+
+**Create super user**
+
+```
+python manage.py createsuperuser
+Username (leave blank to use 'Shivansh'): francisco
+Email address: francisco@123.com
+Password: 12345678
+Password (again): 12345678
+Superuser created successfully.
+```
+Then, run the server
+
+```
+python manage.py runserver
+```
+
+
+## Create a model for the database that the Django ORM will manage.
 
 `models.py:`
 
@@ -95,10 +134,10 @@ class Task(models.Model):
 
 
 
-##Set-Up Django Rest Framework
+## Set-Up Django Rest Framework
 
 
-##Serialize the model data from step-3
+## Serialize the model data from step-3
 
 
-##Create the URI endpoint to view the serialized data.
+## Create the URI endpoint to view the serialized data.
