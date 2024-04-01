@@ -240,7 +240,7 @@ def remove_task(request, task_id):
 ```
 
 ## Functions and Endpoints
-
+```
 _________________________________________________________
 |    Function       |      Endpoint                      |
 |___________________|____________________________________|
@@ -260,18 +260,7 @@ _________________________________________________________
 |___________________|____________________________________|
 |   remove_task     |   /remove_task/<str:task_id>       |
 |___________________|____________________________________|
-
-
-home: Endpoint: '/'
-completed: Endpoint: '/completed'
-remaining: Endpoint: '/remaining'
-add_task: Endpoint: '/add_task'
-delete_task: Endpoint: '/delete_task/<str:task_id>'
-task_detail: Endpoint: '/task_detail/<str:task_id>'
-toggle_complete: Endpoint: '/toggle_complete/<str:task_id>'
-remove_task: Endpoint: '/remove_task/<str:task_id>'
-
-
+```
 
 ## How to run
 
