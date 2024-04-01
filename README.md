@@ -238,6 +238,41 @@ def remove_task(request, task_id):
         task.delete()
         return redirect('home')
 ```
+
+## Functions and Endpoints
+
+_________________________________________________________
+|    Function       |      Endpoint                      |
+|___________________|____________________________________|
+|    home           |   /                                |
+|___________________|____________________________________|
+|    completed      |   /completed                       |
+|___________________|____________________________________|
+|    remaining      |   /remaining                       |
+|___________________|____________________________________|
+|    add_task       |   /delete_task/<str:task_id>       |
+|___________________|____________________________________|
+|   delete_task     |   /task_detail/<str:task_id>       |
+|___________________|____________________________________|
+|   task_detail     |   /task_detail/<str:task_id>       |
+|___________________|____________________________________|
+|   toggle_complete |   /toggle_complete/<str:task_id>   |
+|___________________|____________________________________|
+|   remove_task     |   /remove_task/<str:task_id>       |
+|___________________|____________________________________|
+
+
+home: Endpoint: '/'
+completed: Endpoint: '/completed'
+remaining: Endpoint: '/remaining'
+add_task: Endpoint: '/add_task'
+delete_task: Endpoint: '/delete_task/<str:task_id>'
+task_detail: Endpoint: '/task_detail/<str:task_id>'
+toggle_complete: Endpoint: '/toggle_complete/<str:task_id>'
+remove_task: Endpoint: '/remove_task/<str:task_id>'
+
+
+
 ## How to run
 
 - open the todo_app folder in the IDE -> Then
