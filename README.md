@@ -36,7 +36,7 @@ cd myenv
 pip freeze > requirements.txt
 ```
 
-Now, inside the file requirements.txt write de requirements
+Now, inside the file requirements.txt write the requirements
 
 `requirements.txt:`
 
